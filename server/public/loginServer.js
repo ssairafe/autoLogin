@@ -15,9 +15,9 @@ router.get('/', (req, res, next) => {
   });
 });
 
-function logNum(num, url) {
+function logNum(url) {
   console.log(url)
-  connection.execute('UPDATE `loginInfo` SET `loginInfo`.`website` = ? WHERE `loginInfo`.`website` IS NOT NULL;', [url], (err, rows, fields) => {
+  connection.execute('UPDATE `loginInfo` SET `loginInfo`.`secondUrl` = ? WHERE `loginInfo`.`secondUrl` IS NOT NULL;', [url], (err, rows, fields) => {
     if (err) {
       console.error(err);
     }
@@ -30,7 +30,7 @@ router.patch('/', jsonParser, (req, res, next) => {
     if (err) {
       return next(err);
     }
-   logNum(rows.length, url)
+   logNum(url)
   });
 });
 

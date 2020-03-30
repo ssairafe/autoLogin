@@ -15,13 +15,16 @@ function submitUrl() {
 }
 
 
-async function main(site, user, password) {
+async function main(site, user, password, secondSite) {
   // start browser and open page in incognito
   // go to target url
+
   var browser = await puppeteer.launch({
+    defaultViewport: null,
     headless: false,
-    args: ['--start-fullscreen', '--disable-infobars']
+    args: ['--account-consistency']
   });
+
   var context = await browser.createIncognitoBrowserContext();
   var page = await context.newPage();
   await page.goto(site);
@@ -44,6 +47,9 @@ async function main(site, user, password) {
   await page.waitFor('#login-signin');
   await page.focus('#login-signin');
   await page.keyboard.type('\n');
+  await page.waitFor(3000);
+  await page.cookies();
+  await page.goto(secondSite);
 }
 
 function getUserData() {
@@ -54,8 +60,9 @@ function getUserData() {
         var website = res[i].website;
         var username = res[i].username;
         var password = res[i].password;
+        var secondSite = res[i].secondUrl;
 
-        main(website, username, password);
+        main(website, username, password, secondSite);
       }
     })
     .catch(err => console.log(err));
